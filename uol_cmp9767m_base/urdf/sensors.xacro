@@ -5,7 +5,7 @@
   <xacro:arg name="tf_prefix" default=""/>
 
   <!-- Fake Sprayer Laser -->
-  <link name="$(arg tf_prefix)sprayer">
+  <!-- <link name="$(arg tf_prefix)sprayer">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -32,7 +32,7 @@
     <child link="$(arg tf_prefix)sprayer"/>
     <axis xyz="1 0 0" />
     <origin xyz="-0.45 0.000 0.5" rpy="0 0 0"/>
-  </joint>
+  </joint> -->
 
   <!-- Hokuyo Laser -->
   <link name="$(arg tf_prefix)hokuyo">
@@ -401,5 +401,265 @@
     </sensor>
   </gazebo>
 
-</robot>
 
+<!-- ################################# ARM ############################################-->
+
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>$(arg robot_name)</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <joint name="$(arg robot_name)_arm_to_thorvald" type="fixed">
+    <parent link="$(arg tf_prefix)base_link"/>
+    <child link="$(arg tf_prefix)arm/base_link"/>
+    <origin
+      xyz="-0.4 0 0.55"
+      rpy="1.57 0 1.57" />
+  </joint>
+
+
+  <link name="$(arg tf_prefix)arm/base_link">
+    <inertial>
+      <origin
+        xyz="0 0.026015 0"
+        rpy="0 0 0" />
+      <mass
+        value="1.3548" />
+      <inertia
+        ixx="0.0012241"
+        ixy="0"
+        ixz="0"
+        iyy="0.010139"
+        iyz="0"
+        izz="0.0094931" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link> 
+
+  <link name="$(arg tf_prefix)arm/link1">
+    <inertial>
+      <origin
+        xyz="0.16 0.095 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.65" />
+      <inertia
+        ixx="0.00011077"
+        ixy="0"
+        ixz="0"
+        iyy="0.0090954"
+        iyz="0"
+        izz="0.0090393" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="$(arg robot_name)_arm_joint1"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="$(arg tf_prefix)arm/base_link" />
+    <child
+      link="$(arg tf_prefix)arm/link1" />
+    <axis
+      xyz="0 1 0" />
+
+    <dynamics damping="1.5"/>
+    <limit effort="30" velocity="1.0" />
+  </joint>
+
+
+  <link name="$(arg tf_prefix)arm/link2">
+    <inertial>
+      <origin
+        xyz="-0.16 -0.025 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.65" />
+      <inertia
+        ixx="0.00011077"
+        ixy="0"
+        ixz="0"
+        iyy="0.0090954"
+        iyz="0"
+        izz="0.0090393" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="$(arg robot_name)_arm_joint2"
+    type="continuous">
+    <origin
+      xyz="0.32 0.12 0"
+      rpy="0 0 3.14159265358979" />
+    <parent
+      link="$(arg tf_prefix)arm/link1" />
+    <child
+      link="$(arg tf_prefix)arm/link2" />
+    <axis
+      xyz="0 1 0" />
+    <dynamics damping="0.7"/>
+    <limit effort="30" velocity="1.0" />
+  </joint>
+
+  <link name="$(arg tf_prefix)arm/nozzle">
+    <inertial>
+      <origin
+        xyz="0 -0.004541 0.026567"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.0001"
+        ixy="0"
+        ixz="0"
+        iyy="0.005"
+        iyz="0"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/nozzle.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uol_cmp9767m_base/meshes/nozzle.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="$(arg robot_name)_arm_nozzle_joint"
+    type="continuous">
+    <origin
+      xyz="-0.32 -0.05 0"
+      rpy="-1.5707963267949 0 3.14159265358979" />
+    <parent
+      link="$(arg tf_prefix)arm/link2" />
+    <child
+      link="$(arg tf_prefix)arm/nozzle" />
+    <axis
+      xyz="0 0 1" />
+    <dynamics damping="0.7"/>
+    <limit effort="30" velocity="1.0"/>
+  </joint>
+
+
+  <!-- Transmissions -->
+ 
+  <transmission name="$(arg robot_name)_arm_tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="$(arg robot_name)_arm_joint1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="$(arg robot_name)_arm_motor1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="$(arg robot_name)_arm_tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="$(arg robot_name)_arm_joint2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="$(arg robot_name)_arm_motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="$(arg robot_name)_arm_tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="$(arg robot_name)_arm_nozzle_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="$(arg robot_name)_motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+</robot>

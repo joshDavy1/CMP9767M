@@ -30,6 +30,7 @@
     <arg name="x" value="-5.0" />
   </include>
 
+
   <group if="$(arg world_tf)">
     <node 
       name="world_tf_thorvald_001"

@@ -9,7 +9,7 @@ BOX_SDF="""
 <?xml version='1.0'?>
 <sdf version="1.4">
 <model name="killbox">
-  <pose>0 0 0 0 0 0</pose>
+  <pose>0 0 0 1.57 0 0</pose>
   <static>true</static>
     <link name="link">
       <inertial>
@@ -27,14 +27,14 @@ BOX_SDF="""
       <collision name="collision">
         <geometry>
           <box>
-            <size>.1 .1 .01</size>
+            <size>.03 .03 .01</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>.1 .1 .01</size>
+            <size>.03 .03 .01</size>
           </box>
         </geometry>
         <material>
@@ -59,10 +59,10 @@ class Sprayer:
         request = SpawnModelRequest()
         request.model_name = 'killbox_%s' % uuid4()
         request.model_xml = self.sdf
-        request.reference_frame = 'thorvald_001/base_link'
-        request.initial_pose.position.z = 0.005
-        request.initial_pose.position.x = -0.45
-        request.initial_pose.orientation.w = 1.0
+        request.reference_frame = 'thorvald_001/arm/nozzle'
+        request.initial_pose.position.y = -0.1
+        request.initial_pose.position.z = 0.09
+        request.initial_pose.orientation.w = 1
         self.spawner(request)
         return []
 
