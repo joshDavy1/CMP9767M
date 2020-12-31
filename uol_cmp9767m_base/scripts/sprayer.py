@@ -60,8 +60,8 @@ class Sprayer:
         request.model_name = 'killbox_%s' % uuid4()
         request.model_xml = self.sdf
         request.reference_frame = 'thorvald_001/arm/nozzle'
-        request.initial_pose.position.y = -0.1
-        request.initial_pose.position.z = 0.09
+        request.initial_pose.position.y = -0.15
+        request.initial_pose.position.z = 0
         request.initial_pose.orientation.w = 1
         self.spawner(request)
         return []

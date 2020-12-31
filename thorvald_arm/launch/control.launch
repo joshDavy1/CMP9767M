@@ -1,0 +1,17 @@
+<launch>
+  
+	
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find thorvald_arm)/config/thorvald_arm_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/thorvald_001/"  args="joint1_position_controller joint2_position_controller joint3_position_controller joint_state_controller"/>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen" args="robot_description:=/thorvald_001/robot_description">
+    <remap from="/joint_states" to="/thorvald_001/joint_states" />
+  </node>
+
+</launch>

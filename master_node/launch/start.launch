@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<launch>
+    <!-- Load Simulation -->
+    <include file="$(find uol_cmp9767m_base)/launch/thorvald-sim.launch">
+    </include>
+    <!-- Load Move Base -->
+    <include file="$(find uol_cmp9767m_tutorial)/launch/move_base.launch">
+    </include>
+    <!-- Load Arm Controller -->
+    <include file="$(find thorvald_arm)/launch/control.launch">
+    </include>
+    <!-- Load Weed Tracker -->
+    <include file="$(find weed_tracker)/launch/weedTracker.launch">
+    </include>
+    <!-- Load Arm Control Node-->
+    <node name="arm_controller" pkg="thorvald_arm" type="control.py"/>
+    <!-- Load Row Parameters-->
+    <rosparam file="$(find master_node)/config/crop_row_coords.yaml" />
+    
+
+
+</launch>

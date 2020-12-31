@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node name="weed_detector" pkg="weed_tracker" type="process.py"/>
+    <node name="weed_tracker" pkg="weed_tracker" type="weedsToOdomFrame.py"/>
+</launch>
