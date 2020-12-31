@@ -4,8 +4,6 @@ import rospy
 from geometry_msgs.msg import Pose,PoseArray,PoseStamped
 import tf
 
-MIN_DIST = 0.04
-
 class weedsToOdomFrame :
 
 
@@ -22,7 +20,7 @@ class weedsToOdomFrame :
   
 
     def calculateSquaredDifference(self,pose1,pose2) :
-        return abs(pose1.x - pose2.x) + abs(pose1.y - pose2.y) + abs(pose1.z - pose2.z)
+        return (pose1.x - pose2.x)**2 + (pose1.y - pose2.y)**2 + (pose1.z - pose2.z)**2
 
     def run(self) :
         rate = rospy.Rate(1)
@@ -45,7 +43,7 @@ class weedsToOdomFrame :
                     point_is_distant = True
                     
                     for i in weedsToSpray.poses :
-                        if self.calculateSquaredDifference(weed_in_odom.pose.position,i.position) < MIN_DIST :
+                        if self.calculateSquaredDifference(weed_in_odom.pose.position,i.position) < 0.04 :
                             point_is_distant = False
 
                         
