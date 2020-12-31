@@ -7,6 +7,8 @@
     <!-- Load Move Base -->
     <include file="$(find uol_cmp9767m_tutorial)/launch/move_base.launch">
     </include>
+    <!-- Load Rviz -->
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find master_node)/rviz/config.rviz" />
     <!-- Load Arm Controller -->
     <include file="$(find thorvald_arm)/launch/control.launch">
     </include>
@@ -17,7 +19,4 @@
     <node name="arm_controller" pkg="thorvald_arm" type="control.py"/>
     <!-- Load Row Parameters-->
     <rosparam file="$(find master_node)/config/crop_row_coords.yaml" />
-    
-
-
 </launch>
