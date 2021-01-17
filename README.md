@@ -1,6 +1,8 @@
 # CMP9767M
 
 ## Overview
+![Thorvald with Arm](https://github.com/joshDavy1/CMP9767M/blob/master/thorvald_with_arm.png)
+
 My focus was on the Simulation specialistion. For my work I have implemented a realistic precision sprayer for thorvald. This was designed in Solidworks and a exporter was used to create the URDF file. This was then intergrated in the existing thorvald description. PID JointEffortControllers are then setup to control the joints of the arm. Then a inverse kinematic solution was solved by hand and implemented in thorvald_arm. A simple HSV filter based weed detector is also implemented and a master node controls the arm and thorvald to move along rows and spray weeds.
 
 ## Install 
