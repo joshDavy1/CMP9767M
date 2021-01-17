@@ -1,4 +1,4 @@
-row_1_start: {x: 6.00,y: -2.00, theta: 1.57}
-row_1_end:   {x: -6.00,y: -2.00, theta: 1.57}
-row_2_start: {x: -6.00,y: -3.00, theta: 0.00}
-row_2_end:   {x: 6.00,y: -3.00, theta: 0.00}
+row_1_start: {x: 6.00,y: -4.00, theta: 1.57}
+row_1_end:   {x: -6.00,y: -4.00, theta: 1.57}
+row_2_start: {x: -6.00,y: -5.00, theta: 0.00}
+row_2_end:   {x: 6.00,y: -5.00, theta: 0.00}

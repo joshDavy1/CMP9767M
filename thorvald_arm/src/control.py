@@ -9,6 +9,7 @@ PI = 3.14159
 
 class kinematics :
     def __init__(self) :
+        """ Init node """
         self.joint1_pub = rospy.Publisher('/thorvald_001/joint1_position_controller/command', Float64, queue_size=10)
         self.joint2_pub = rospy.Publisher('/thorvald_001/joint2_position_controller/command', Float64, queue_size=10)
         self.joint3_pub = rospy.Publisher('/thorvald_001/joint3_position_controller/command', Float64, queue_size=10)
@@ -23,6 +24,7 @@ class kinematics :
         self.publish_angles(theta_1,theta_2,theta_3)
         
     def goal_callback(self,data) :
+        """ Gets goal point and sets angles """
         x = data.x
         y = data.y
         theta_1,theta_2,theta_3 = self.inverseKinematics(x,y)
@@ -35,6 +37,7 @@ class kinematics :
         self.joint3_pub.publish(theta_3)
 
     def inverseKinematics(self,x,y,L1 = 0.32,L2= 0.32,L3 = 0.08):
+        """ Calculate inverse kinematic solution """
         # https://www.daslhub.org/unlv/wiki/doku.php?id=2_link_kinematics
         y = -y
         cos_theta_2 = (x**2 + y**2 - L1**2 - L2**2) / (2*L1*L2)

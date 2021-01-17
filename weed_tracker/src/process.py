@@ -10,6 +10,13 @@ import image_geometry
 from geometry_msgs.msg import Pose,PoseArray
 import numpy as np
 
+LOW_H  = 0.207
+HIGH_H = 0.643
+LOW_S  = 0.000
+HIGH_S = 0.460
+LOW_V  = 0.069
+HIGH_V = 0.307
+
 class filterAndBlob:
 
     ## Callback for image
@@ -65,16 +72,18 @@ class filterAndBlob:
         self.blobDetector = cv2.SimpleBlobDetector_create(params)
         
     def hsvFilter(self,imageHSV) :
+        """ Filters image by HSV values"""
         return cv2.inRange(imageHSV, (self.low_H, self.low_S, self.low_V), (self.high_H, self.high_S, self.high_V))
 
 
     def blobDetect(self,im) :
+        """ Detects blobs in a image """
         keypoints = self.blobDetector.detect(im)
         im_with_keypoints = cv2.drawKeypoints(im, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         return keypoints,im_with_keypoints
 
-    # Takes an array of points, projects into camera frame and returns array of poses.
     def pointsToPoseArray(self,points,distance) :
+        """  Takes an array of points, projects into camera frame and returns array of poses. """
         pose_array = PoseArray()
         pose_array.header.frame_id = self.camera_model.tfFrame()
         for pnt in points :
@@ -90,6 +99,7 @@ class filterAndBlob:
         return pose_array
 
     def run(self) :
+        """ Run main loop """
         rospy.init_node('filterAndBlob', anonymous=True)
         rate = rospy.Rate(1)
         rate.sleep()
@@ -100,18 +110,15 @@ class filterAndBlob:
             filteredImage = self.hsvFilter(hsvImage) 
             filteredImage = cv2.dilate(filteredImage, None, iterations=25)
             filteredImage = cv2.medianBlur(filteredImage,31)
-            
             # Blob detection
             filteredImage = cv2.bitwise_not(filteredImage)
             keypoints,image = self.blobDetect(filteredImage)
-            cv2.imshow('filteredImage',image)
-            cv2.waitKey(1)
-
+            # Create pose_array object
             points = []
             for i in keypoints :
                 points.append((i.pt[0],i.pt[1]))
             pose_array = self.pointsToPoseArray(points,0.45)
-
+            # Publish
             self.pub.publish(pose_array)
             rate.sleep()
 
@@ -120,8 +127,8 @@ class filterAndBlob:
            
 if __name__ == '__main__':
     try:
-        fil = filterAndBlob(low_h = 0.207,low_s = 0.000,low_v = 0.069,
-                    high_h = 0.643, high_s = 0.460, high_v= 0.307) 
+        fil = filterAndBlob(low_h = LOW_H,low_s = LOW_S,low_v = LOW_V,
+                    high_h = HIGH_H, high_s = HIGH_S, high_v= HIGH_V) 
         fil.run()
     except rospy.ROSInterruptException:
         pass
