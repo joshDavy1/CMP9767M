@@ -76,7 +76,7 @@ class Mover :
         """ Calculates if arm is over a weed """
         weed_in_nozzle = self.listener.transformPose("/thorvald_001/arm/nozzle",weed)
         distance = weed_in_nozzle.pose.position.z
-        return abs(distance) < tolerance :
+        return abs(distance) < tolerance
         
     def at_goal(self,goal,tolerance) :
         """ Calculates if robot is at the row end """
@@ -129,7 +129,7 @@ class Mover :
         x = abs(weed1.pose.position.x - weed2.pose.position.x)
         y = abs(weed1.pose.position.y - weed2.pose.position.y)
         z = abs(weed1.pose.position.z - weed2.pose.position.z)
-        return x+y+z < tolerance :
+        return x+y+z < tolerance
        
 
     def move_along_row_and_spray(self,goal,velocity = 0.15, goal_tolerance = 0.15) :
