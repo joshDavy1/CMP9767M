@@ -17,15 +17,19 @@ class Mover :
         """ Init node """
         rospy.init_node('mover', anonymous=True)
         self.rate = rospy.Rate(10)
+        # Transform listener
         self.listener = tf.TransformListener()
+        # Move base client
         self.client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
         self.client.wait_for_server()
-
+        # Wait for sprayer server
         rospy.wait_for_service("/thorvald_001/spray")
         self.spray = rospy.ServiceProxy("/thorvald_001/spray",Empty)
-        
+
+        # Velocity and Arm publishers
         self.cmd_vel_pub = rospy.Publisher("/thorvald_001/teleop_joy/cmd_vel",Twist,queue_size=10)
         self.arm_pose_pub = rospy.Publisher("/arm_goal",Point,queue_size=10)
+        # Get pose of weeds
         self.weedPoseSubscriber = rospy.Subscriber("/weedsToSpray",PoseArray,self.weedPoseCallback)
         self.weedPoses = PoseArray()
 
@@ -45,6 +49,7 @@ class Mover :
         goal.target_pose.pose.orientation.w = np.cos(coord['theta'])
 
         self.client.send_goal(goal)
+        # Wait for result.
         wait = self.client.wait_for_result()
         if not wait:
             rospy.logerr("Action server not available!")
@@ -57,6 +62,7 @@ class Mover :
         point = Point()
         point.x = x
         point.y = y
+        # Publish Point
         self.arm_pose_pub.publish(point)
 
     def get_weed(self,i) :
@@ -70,11 +76,8 @@ class Mover :
         """ Calculates if arm is over a weed """
         weed_in_nozzle = self.listener.transformPose("/thorvald_001/arm/nozzle",weed)
         distance = weed_in_nozzle.pose.position.z
-        if abs(distance) < tolerance :
-            return True  
-        else : 
-            return False
-
+        return abs(distance) < tolerance :
+        
     def at_goal(self,goal,tolerance) :
         """ Calculates if robot is at the row end """
         coord = self.get_current_coords()
@@ -104,6 +107,7 @@ class Mover :
         desired_angle =  self.angle_between_two_points(coords['x'],coords['y'],goal['x'],goal['y'])
         actual_angle = coords['theta']
         diff = desired_angle-actual_angle
+        
         # If the angle will be shorter to rotate the other way"""
         if (desired_angle > PI/2 and actual_angle < -PI/2) or (desired_angle < -PI/2 and actual_angle > PI/2) :
             diff = -diff/8
@@ -125,27 +129,29 @@ class Mover :
         x = abs(weed1.pose.position.x - weed2.pose.position.x)
         y = abs(weed1.pose.position.y - weed2.pose.position.y)
         z = abs(weed1.pose.position.z - weed2.pose.position.z)
-        if x+y+z < tolerance :
-            return True
-        else :
-            return False
+        return x+y+z < tolerance :
+       
 
     def move_along_row_and_spray(self,goal,velocity = 0.15, goal_tolerance = 0.15) :
         """ Move alongs a row and stops and spray weeds if seen and within range. """
         weedsSprayed = []
+        # While not at goal
         while not (self.at_goal(goal,goal_tolerance) or rospy.is_shutdown()) :
+            #  For each weed
             for i in range(len(self.weedPoses.poses)) :
                 weed = self.get_weed(i)
+                # If close to weed
                 if self.at_weed(weed) :
+                    # and not already sprayerd
                     close_to_already_sprayed_weed = False
                     for i in weedsSprayed :
                         if self.weedClose(weed,i) :
                             close_to_already_sprayed_weed = True
-
+                    # spray
                     if not close_to_already_sprayed_weed :
                         self.spray_weed(weed)
                         weedsSprayed.append(weed)
-
+            # else carry on moving towards goal
             self.move_straight_to(goal,velocity)
             self.rate.sleep()     
             
